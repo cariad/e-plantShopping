@@ -34,8 +34,13 @@ export const CartSlice = createSlice({
       if (itemToUpdate) itemToUpdate.quantity = quantity;
     },
   },
+  // Added by @cariad 2024-10-01
+  selectors: {
+    selectItemCount: (state) => state.items.reduce((acc, item) => acc + item.quantity, 0),
+  },
 });
 
 export const { addItem, removeItem, updateQuantity } = CartSlice.actions;
+export const { selectItemCount } = CartSlice.selectors;
 
 export default CartSlice.reducer;

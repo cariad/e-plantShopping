@@ -1,18 +1,12 @@
 import React, { useReducer, useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
-import { addItem } from './CartSlice';
-import { useDispatch } from 'react-redux';
+import { addItem, selectItemCount } from './CartSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ProductList() {
     const [addedToCart, setAddedToCart] = useState({});
-
-    // @cariad 2024-10-01
-    const [cartCount, dispatchCartCount] = useReducer(
-        (state, action) => state += action,
-        0,
-    );
-
+    const cartCount = useSelector(selectItemCount);  // @cariad 2024-10-01
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
 
@@ -20,7 +14,6 @@ function ProductList() {
 
     // Added by @cariad 2024-10-01
     const handleAddToCart = plant => {
-        dispatchCartCount(1);
         dispatch(addItem(plant));
 
         setAddedToCart(prevState => ({
@@ -327,10 +320,7 @@ const handlePlantsClick = (e) => {
 
         </div>
  ) :  (
-    <CartItem
-        dispatchCartCount={dispatchCartCount}
-        onContinueShopping={handleContinueShopping}
-    />
+    <CartItem onContinueShopping={handleContinueShopping} />
 )}
     </div>
     );
