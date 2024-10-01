@@ -3,33 +3,49 @@ import { useSelector, useDispatch } from 'react-redux';
 import { removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
-const CartItem = ({ onContinueShopping }) => {
-  const cart = useSelector(state => state.cart.items);
+const CartItem = ({ dispatchCartCount, onContinueShopping }) => {
+  const cart = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
 
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
- 
+    return cart.reduce((acc, item) => acc + calculateTotalCost(item), 0);
+  };
+
+  const handleCheckoutShopping = () => {
+    alert('Functionality to be added for future reference');
   };
 
   const handleContinueShopping = (e) => {
-   
+    onContinueShopping(e);
   };
 
-
-
   const handleIncrement = (item) => {
+    const { name, quantity } = item;
+
+    dispatch(updateQuantity({ name, quantity: quantity + 1 }));
+    dispatchCartCount(1);
   };
 
   const handleDecrement = (item) => {
-   
+    const { name, quantity } = item;
+
+    if (quantity === 1) {
+      dispatch(removeItem(item));
+    } else {
+      dispatch(updateQuantity({ name, quantity: quantity - 1 }));
+      dispatchCartCount(-1);
+    }
   };
 
   const handleRemove = (item) => {
+    dispatchCartCount(-item.quantity);
+    dispatch(removeItem(item));
   };
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    return item.quantity * Number(item.cost.replace('$', ''));
   };
 
   return (
@@ -57,12 +73,16 @@ const CartItem = ({ onContinueShopping }) => {
       <div className="continue_shopping_btn">
         <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
         <br />
-        <button className="get-started-button1">Checkout</button>
+        <button
+          className="get-started-button1"
+          // @cariad 2024-10-01
+          onClick={handleCheckoutShopping}
+        >
+          Checkout
+        </button>
       </div>
     </div>
   );
 };
 
 export default CartItem;
-
-
