@@ -1,12 +1,12 @@
 import React, { useReducer, useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
-import { addItem, selectItemCount } from './CartSlice';
+import { addItem, selectItemCount, selectPlants } from './CartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 function ProductList() {
-    const [addedToCart, setAddedToCart] = useState({});
     const cartCount = useSelector(selectItemCount);  // @cariad 2024-10-01
+    const plantsInCart = useSelector(selectPlants);  // @cariad 2024-10-01
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
 
@@ -15,12 +15,9 @@ function ProductList() {
     // Added by @cariad 2024-10-01
     const handleAddToCart = plant => {
         dispatch(addItem(plant));
-
-        setAddedToCart(prevState => ({
-            ...prevState,
-            [plant.name]: true,
-        }));
     }
+
+    const isPlantInCart = (plant) => plantsInCart.includes(plant.name);
 
     const plantsArray = [
         {
@@ -307,10 +304,11 @@ const handlePlantsClick = (e) => {
                     <div className="product-cost">{plant.cost}</div>
 
                     <button
-                      className="product-button"
+                      disabled={isPlantInCart(plant)}
+                      className={isPlantInCart(plant) ? "product-button added-to-cart" : "product-button"}
                       onClick={() => handleAddToCart(plant)}
                     >
-                      Add to Cart
+                      {isPlantInCart(plant) ? "Added to Cart" : "Add to Cart"}
                     </button>
                   </div>
                 ))}
